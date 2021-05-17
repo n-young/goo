@@ -1,1 +1,7 @@
 hello: "World"
+dog:
+  cat:
+    mouse: "1"
+    rat: "2"
+    meow: "3"
+  ferret: "moo"

@@ -3,26 +3,28 @@ package pkg
 import (
 	"fmt"
 	"io/ioutil"
-    "os"
+	"os"
 
 	"gopkg.in/yaml.v2"
+	"github.com/otiai10/copy"
 )
 
 // Config struct. Built from site.yaml.
 type Config struct {
-	Name  string
+	Name   string
 	Output string
 	Static string
+	Global map[string]string
+	Partials map[string]string
 	Pages  []Page
 }
-
 
 // Page struct. For each in pages.
 type Page struct {
 	Title    string
 	Path     string
 	Template string
-	Data  	 string
+	Data  	 map[string]string
 }
 
 // Gets the real path.
@@ -39,42 +41,30 @@ func (p Page) getPath(config Config) (string, error) {
 	}
 }
 
-// Gets data as a map.
-func (p Page) getData() map[string]interface{} {
-	// Reads data out into a string.
-	data, io_err := ioutil.ReadFile(p.Data)
-	Check(io_err)
-
-	// Unmarshal into m.
-	m := make(map[string]interface{})
-	y_err := yaml.Unmarshal(data, &m)
-	Check(y_err)
-	return m
-}
-
 // Manifests a page. Fills fields, converts to string, and outputs to file.
-func (p Page) manifest(config Config) string {
+func (p Page) manifest(config Config, globalData Data) string {
 	// Read out template file.
 	bytes, io_err := ioutil.ReadFile(p.Template)
 	Check(io_err)
 	ret := string(bytes)
 
-	// TODO: Fill out partials, if necessary.
-	// ret = ProcessPartials(ret, config)
+	// Fill out partials, if necessary.
+	ret = ProcessPartials(ret, config.Partials)
 
-	// TODO: Fill out data, if necessary.
-	// TODO: Make it such that if there are data 
-	if p.Data != "" {
-		data := p.getData()
-		ret = ProcessData(ret, data)
+	// Fill out data, if necessary.
+	// TODO: Make it such that if there are data that aren't filled, error?
+	if p.Data != nil {
+		data := GetData(p.Data)
+		data.(DataNode).setTitle(p.Title)
+		ret = ProcessData(ret, data, globalData)
 	}
 
-	// TODO: Copy static folder over
+	// Copy static folder over
+	copy.Copy(config.Static, config.Output + "/" + config.Static)
 
 	// Return.
 	return ret
 }
-
 
 // Parse them site.yaml file to get site Config.
 func parseConfig(file string) Config {
@@ -90,9 +80,9 @@ func parseConfig(file string) Config {
 }
 
 // Write to file.
-func writePage(page Page, config Config) {
+func writePage(page Page, config Config, globalData Data) {
 	// Get data and path
-	data := page.manifest(config)
+	data := page.manifest(config, globalData)
 	path, path_err := page.getPath(config)
 	Check(path_err)
 
@@ -106,15 +96,14 @@ func Build(file string) {
 	// Sanity print
 	fmt.Println("Building Goo site.")
 
-	// Parse config
+	// Parse config, setup Dir, get globalData
 	config := parseConfig(file)
-
-	// Setup dir
 	os.RemoveAll(config.Output)
 	os.MkdirAll(config.Output, 0744)
+	globalData := GetData(config.Global)
 
 	// Write pages
 	for _, page := range config.Pages {
-		writePage(page, config)
+		writePage(page, config, globalData)
 	}
 }
