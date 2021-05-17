@@ -1,22 +1,32 @@
-name: "My Goo Site"
-output: "build"
-static: "static"
-global: 
-  everywhere: "data/global.yaml"
-partials:
-  header: "partials/header.tmpl"
-  footer: "partials/footer.tmpl"
-# shortcodes:
-#   - row: "shortcodes/post.tmpl"
-#   - img: "shortcodes/img.tmpl"
-pages:
-  - title: "Home"
-    path: "/"
-    template: "templates/home.tmpl"
-    data:
-      home: "data/home.yaml"
+# Specify site name, output folder, static folder.
+name: My Goo Site
+output: build
+static: static
 
-  - title: "Store"
-    path: "/store/"
-    template: "templates/store.tmpl"
-# collections:
+# Global variable files.
+global:
+    everywhere: data/global.yaml
+
+# Partials.
+partials:
+    header: partials/header.tmpl
+    footer: partials/footer.tmpl
+
+# Pages.
+pages:
+    - title: Home
+      path: /
+      template: templates/home.tmpl
+      data:
+          home: data/home.yaml
+
+    - title: Store
+      path: /store/
+      template: templates/store.tmpl
+
+# Collections.
+collections:
+    - title: Blog Posts
+      path: /blog
+      template: templates/blog.tmpl
+      posts: posts

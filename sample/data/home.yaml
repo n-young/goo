@@ -5,3 +5,8 @@ dog:
     rat: "2"
     meow: "3"
   ferret: "moo"
+  listy:
+    - name: "dog"
+      house: "cat"
+    - name: "woohoo"
+      house: "5908"

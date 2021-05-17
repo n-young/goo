@@ -2,6 +2,11 @@
 
 this is home {{ data home.dog.cat.mouse }}
 
-{{ global everywhere.dog }}
+{{ data global.everywhere.dog }}
+
+{{ loop home.dog.listy
+    NAME: ${name}
+    HOUSE: ${house}
+}}
 
 {{ title }}
