@@ -5,7 +5,7 @@ static: static
 
 # Global variable files.
 global:
-    everywhere: data/global.yaml
+    secret_message: Hello, my darling
 
 # Partials.
 partials:
