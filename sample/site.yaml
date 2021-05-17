@@ -1,0 +1,18 @@
+name: "My Goo Site"
+output: "build"
+static: "static"
+# partials:
+#   - header: "partials/header.tmpl"
+#   - footer: "partials/footer.tmpl"
+# shortcodes:
+#   - row: "shortcodes/post.tmpl"
+#   - img: "shortcodes/img.tmpl"
+pages:
+  - title: "Home"
+    path: "/"
+    template: "templates/home.tmpl"
+    data: "data/home.yaml"
+
+  - title: "Store"
+    path: "/store/"
+    template: "templates/store.tmpl"
