@@ -31,12 +31,16 @@ type Page struct {
 func (p Page) getPath(config Config) (string, error) {
 	switch {
 	case len(p.Path) == 0 || string(p.Path[0]) != "/":
+		// If path doesn't start with "/", it's malformed.
 		return "", GenericError{"Path did not begin with \"/\"."}
 	case p.Path == "/":
+		// If root path, throw in the index.html.
 		return config.Output + "/index.html", nil
 	case string(p.Path[len(p.Path)-1]) == "/":
+		// Removing trailing slash.
 		return config.Output + p.Path[:len(p.Path)-1] + ".html", nil
 	default:
+		// Regular case.
 		return config.Output + p.Path + ".html", nil
 	}
 }
@@ -52,27 +56,24 @@ func (p Page) manifest(config Config, globalData Data) string {
 	ret = ProcessPartials(ret, config.Partials)
 
 	// Fill out data, if necessary.
-	// TODO: Make it such that if there are data that aren't filled, error?
 	if p.Data != nil {
 		data := GetData(p.Data)
 		data.(DataNode).setTitle(p.Title)
 		ret = ProcessData(ret, data, globalData)
 	}
 
-	// Copy static folder over
+	// Copy static folder over, return.
 	copy.Copy(config.Static, config.Output + "/" + config.Static)
-
-	// Return.
 	return ret
 }
 
 // Parse them site.yaml file to get site Config.
 func parseConfig(file string) Config {
-	// Read config out to a string
+	// Read config out to a string.
 	data, io_err := ioutil.ReadFile(file)
 	Check(io_err)
 
-	// Unmarshal YAML into c.
+	// Unmarshal YAML into config.
 	config := Config{}
 	y_err := yaml.Unmarshal([]byte(data), &config)
 	Check(y_err)
@@ -106,4 +107,7 @@ func Build(file string) {
 	for _, page := range config.Pages {
 		writePage(page, config, globalData)
 	}
+
+	// Sanity print
+	fmt.Println("Goo site built at " + config.Output)
 }
