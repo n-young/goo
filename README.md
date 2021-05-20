@@ -162,6 +162,14 @@ name: Arthur
 
 Our parsing supports unsafe HTML, attributes, :joy:-style emojis, inline LaTex, syntax highlighting, and the entire GitHub Flavored Markdown spec.
 
+#### Note on using MathJax
+
+If you decide to use inline math, link the following in the footer:
+```html
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+```
+
 
 ## Reference
 
