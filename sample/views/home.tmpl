@@ -1,0 +1,24 @@
+Importing header:
+{{ partial header }}
+
+Welcome home, {{ data home.name }}
+
+We can get nested data: {{ data home.this.is.heavily.nested }}
+
+We can access global data {{ data global.everywhere.bhutan }}
+
+We can specify more interesting template strings:
+{{ template
+I've got ${home.body.eyes} eyes, ${home.body.legs} legs, and ${home.body.fingers} fingers!
+}}
+
+We can loop over some list data:
+{{ loop home.shopping-list
+    Item: ${name}
+    Price: ${price}
+}}
+
+This is the title of the page: {{ title }}
+
+Importing footer:
+{{ partial footer }}

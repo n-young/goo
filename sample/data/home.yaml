@@ -1,12 +1,19 @@
-hello: "World"
-dog:
-  cat:
-    mouse: "1"
-    rat: "2"
-    meow: "3"
-  ferret: "moo"
-  listy:
-    - name: "dog"
-      house: "cat"
-    - name: "woohoo"
-      house: "5908"
+name: Jonathan Smith
+
+this:
+    is:
+        heavily:
+            nested: Surprise!
+
+shopping-list:
+    - name: Celery
+      price: 10pence
+    - name: Potato
+      price: 20pence
+    - name: Eggo
+      price: 10pence
+
+body:
+    eyes: two
+    legs: two
+    fingers: ten

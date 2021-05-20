@@ -13,7 +13,8 @@ import (
 type Config struct {
 	Name        string
 	Output      string
-	Static      string
+	Static_src      string
+	Static_dest      string
 	Global      map[string]string
 	Partials    map[string]string
 	Pages       []Page
@@ -55,7 +56,7 @@ func Build(file string) {
 	}
 
 	// Copy static folder over.
-	copy.Copy(config.Static, config.Output+"/"+config.Static)
+	copy.Copy(config.Static_src, config.Output+"/"+config.Static_dest)
 
 	// Sanity print
 	fmt.Println("Goo site built at '" + config.Output + "'")
