@@ -2,7 +2,6 @@ package pkg
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
     "path/filepath"
 	"strings"
@@ -42,7 +41,7 @@ func (c Collection) getBasePath(config Config) (string, error) {
 }
 
 // Convert a given Markdown file to HTML
-func markdownToHtml(filename string) (string, map[string]interface{}) {
+func markdownToHtml(filename string) (string, map[interface{}]interface{}) {
 	// Define Markdown parsing options.
 	md := goldmark.New(
 		goldmark.WithExtensions(
@@ -72,10 +71,14 @@ func markdownToHtml(filename string) (string, map[string]interface{}) {
 	// Read source into the buffer.
 	context := parser.NewContext()
 	var buf bytes.Buffer
-	Check(md.Convert(source, &buf))
+	Check(md.Convert(source, &buf, parser.WithContext(context)))
 
-	// Get Metadata
-	metadata := meta.Get(context)
+	// Get and convert Metadata
+	metadata_raw := meta.Get(context)
+	metadata := make(map[interface{}]interface{})
+	for k, v := range metadata_raw {
+		metadata[k] = v
+	}
 	return buf.String(), metadata
 }
 
@@ -107,15 +110,17 @@ func WriteCollection(c Collection, config Config, globalData Data) error {
     Check(err)
 	for _, file := range files {
 		// Convert to HTML, inject into template.
-		content, _ := markdownToHtml(file)
+		content, metadata_raw := markdownToHtml(file)
+		metadata, err := CastData(metadata_raw)
+		Check(err)
 		processed := ProcessContent(ret, content)
+		processed = ProcessData(processed, metadata)
 
 		// Get correct path.
 		tokens := strings.Split(file, "/")
 		trailing_path := strings.TrimSuffix(tokens[len(tokens) - 1], ".md")
 
 		// Write
-		fmt.Println(base_path + trailing_path)
 		wr_err := ioutil.WriteFile(base_path + trailing_path + ".html", []byte(processed), 0644)
 		Check(wr_err)
 	}

@@ -81,6 +81,7 @@ func CastData(m map[interface{}]interface{}) (Data, error) {
 			}
 			data[k.(string)] = newList
 		default:
+			fmt.Printf("map = %+v\n", m)
 			fmt.Printf("data = %T\n", v)
 			return nil, GenericError{"Malformed Data."}
 		}
