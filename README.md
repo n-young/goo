@@ -6,13 +6,13 @@ Goo is ([yet another](https://jamstack.org/generators/)) static site generator b
 
 Run `go get github.com/n-young/goo` to install it. Then, you can run Goo from the command line.
 
-## Usage
+## CLI
 
-### CLI
+Goo is a command-line tool. To see a list of commands run `goo help`.
 
-TODO: Explain this LOL
+There are four commands. `goo build <site.yaml>` builds a site with the provided site.yaml file. `goo help`, as you saw, prints out some help information. `goo init` initializes an empty Goo site. `goo watch` (under development) is `goo build` with hot reloading.
 
-### `site.yaml`
+## `site.yaml`
 
 Most of Goo's functionality is built atop your main `site.yaml` file, which is where you specify the entire shape of the site. A sample is as follows:
 
@@ -70,7 +70,7 @@ Let's walk through this example.
 While the above gives an idea of what each part of the `site.yaml` file means, it is through Templates and Posts that these fields come alive.
 
 
-### Templates
+## Templates
 
 A template (e.g. `templates/index.tmpl`) is an HTML-like file that can have data and content injected into it. The structure of a template is just like HTML, except that you can inject data using something of the pattern:
 
@@ -80,22 +80,27 @@ A template (e.g. `templates/index.tmpl`) is an HTML-like file that can have data
 
 There are a number of potential actions, details below.
 
-#### Title
+### Title
 `title` takes no payload, and injects the current page or post title.
 
-#### Partial
+### Partial
 `partial <partial_name>` takes a name of a partial, specified in the `site.yaml`, and injects its contents. Partials cannot be injected into other partials (no nested evaluation).
 
+### Data model
 
-#### TODO: Data model
+The data you access through the `data`, `template`, or `loop` actions, specified below, adhere to a prescribed data model. It looks as follows:
 
-- title
-- global
-- post
-- defined paths
-- examples
+```yaml
+title: ...
+global: ...
+post: ...
+...
+```
 
-#### Data
+Contained is a `title` field, which contains the `title` field in posts or collections. Next is the `global` field, which contains the map defined in the global data section. Next is the `post` field, which contains the data from the header of a Markdown file. Last is the mapping you define in the actual data section of the respective post or collection.
+
+
+### Data
 `data` takes the path of a data point and injects it with no special formatting. For example, if we had a `data.yaml` file like:
 
 ```yaml
@@ -119,7 +124,7 @@ Inside of the template that has access to this data, we could inject the "hue" f
 {{ data dogs.dog.color.hue }}
 ```
 
-#### Template
+### Template
 `template` is the same as data, just with more complex string replacement. An example illustrates best:
 
 ```
@@ -131,7 +136,7 @@ Inside of the template that has access to this data, we could inject the "hue" f
 }}
 ```
 
-#### Loop
+### Loop
 `loop` allows you to iterate over sequential data in YAML, applying a template to each data point. To loop, you specify `loop`, then the data to be looped over, then the template. For example:
 
 ```yaml
@@ -156,12 +161,50 @@ Could be looped over using:
 
 This would generate two table rows, making it ideal for highly repetitive data.
 
-TODO: Nested loops, also need to change parsing, then.
+You can next loops, so long as the data passed in is within the context of the loop:
 
-### Content
+```yaml
+dogs:
+    - name: Fido
+      age: "15"
+      paws:
+        - digit: 1
+        - digit: 2
+        - digit: 3
+
+    - name: George
+      age: old
+      paws:
+        - digit: 1
+        - digit: 2
+        - digit: 3
+
+    - name: Robin
+      age: 10?
+      paws:
+        - digit: 1
+        - digit: 2
+        - digit: 3
+
+```
+
+Could be looped over using:
+```
+{{ loop
+<tr>
+    Name: ${dogs.dogs.name}
+    Age: ${dogs.dogs.age}
+    Digits: {{ loop paws
+        ${digit}
+    }}
+</tr>
+}}
+```
+
+## Content
 `content` is used exclusively in a collection, and is the site where the main content specified in a Markdown file will be injected. Information on parsing options is in the Posts section.
 
-### Posts
+## Posts
 
 Markdown files used in a Collection will each be converted to HTML using Goldmark and written out as a separate page. This is ideal for generating structured content like blog posts. The structure of a post file is as follow:
 
@@ -174,13 +217,11 @@ name: Arthur
 # Hello, world!
 ```
 
-TODO: Accessing post data (in the post object)
-
-TODO: Clarify the below as other features and give examples.
+As said above, you can access data in the header section (which should be written as YAML) in the `post` object (`{{ data post.[data] }}`).
 
 Our parsing supports unsafe HTML, attributes, :joy:-style emojis, inline LaTex, syntax highlighting, and the entire GitHub Flavored Markdown spec.
 
-#### Note on using MathJax
+### Note on using MathJax
 
 If you decide to use inline math, link the following in the footer:
 ```html
@@ -188,11 +229,9 @@ If you decide to use inline math, link the following in the footer:
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 ```
 
-
 ## Reference
 
 Note that the `sample/` directory of this repository has examples of most of the functionality offered by Goo. If you'd like to see new functionality, submit an Issue.
-
 
 ## Contributing
 
