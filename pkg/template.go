@@ -79,10 +79,13 @@ func getMatches(template string, ldel string, rdel string) ([]Match, error) {
 			curr_li = mi[0]
 		}
 		// Count up or down depending on the current delimiter.
+		// TODO: Handle other delim edge cases.
+		trimmed_ldel := strings.Trim(ldel, "\\")
+		trimmed_rdel := strings.Trim(rdel, "\\")
 		switch curr_delim := template[mi[0]:mi[1]]; curr_delim {
-		case strings.Trim(ldel, "\\"):
+		case trimmed_ldel:
 			count++
-		case strings.Trim(rdel, "\\"):
+		case trimmed_rdel:
 			count--
 		default:
 			return nil, GenericError{"Bad delimiter."}
