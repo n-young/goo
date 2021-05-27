@@ -8,10 +8,25 @@ this:
 shopping-list:
     - name: Celery
       price: 10pence
+      descs:
+          - desc: beep1
+          - desc: beep2
+          - desc: beep3
+
     - name: Potato
       price: 20pence
+      descs:
+          - desc: beep4
+          - desc: beep5
+          - desc: beep6
+          - desc: beep7
+          - desc: beep8
+
     - name: Eggo
       price: 10pence
+      descs:
+          - desc: beep10
+          - desc: beep11
 
 body:
     eyes: two

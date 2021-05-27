@@ -53,7 +53,15 @@ func processTemplate(template string, data Data) (string, error) {
 func populateTemplates(payload string, list []Data) (string, error) {
 	ret := ""
 	for _, data := range list {
-		entry, r_err := processTemplate(payload, data)
+		// First, check if the payload has any matches.
+		curr_payload := payload
+		matches, m_err := getMatches(payload, `{{`, `}}`)
+		Check(m_err)
+		if matches != nil {
+			curr_payload = ProcessData(payload, data)
+		}
+		//
+		entry, r_err := processTemplate(curr_payload, data)
 		Check(r_err)
 		ret += entry
 	}
