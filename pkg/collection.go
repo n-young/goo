@@ -111,7 +111,9 @@ func WriteCollection(c Collection, config Config, globalData Data) error {
 	for _, file := range files {
 		// Convert to HTML, inject into template.
 		content, metadata_raw := markdownToHtml(file)
-		metadata, err := CastData(metadata_raw)
+		metadata_nested := make(map[interface{}]interface{})
+		metadata_nested["post"] = metadata_raw
+		metadata, err := CastData(metadata_nested)
 		Check(err)
 		processed := ProcessContent(ret, content)
 		processed = ProcessData(processed, metadata)

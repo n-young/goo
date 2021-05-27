@@ -30,4 +30,4 @@ collections:
     - title: Blog Posts
       path: /blog
       template: views/blog.tmpl
-      posts: posts
+      posts: data/posts
