@@ -10,7 +10,7 @@ import (
 // Match struct - specifies what should be replaced.
 type Match struct {
 	original string
-	new string
+	new      string
 }
 
 // Get action from a match.
@@ -19,7 +19,7 @@ func (match Match) getToken(n int) (string, error) {
 	stripped = strings.Trim(stripped, " ")
 	fields := strings.Fields(stripped)
 	if len(fields) < n {
-		return "", GenericError{"Invalid token call."}
+		return "", GenericError{"Invalid token call. " + match.original}
 	}
 	return fields[n-1], nil
 }
@@ -36,16 +36,17 @@ func (match Match) getPayload(n int) string {
 
 // Process a single template.
 func processTemplate(template string, data Data) (string, error) {
-	matches := getMatches(template, `\${(.|\n)+?}`)
-		replaced := make([]Match, len(matches))
-		for i, match := range matches {
-			replaced[i] = match
-			stripped := strings.Trim(match.original, "${}")
-			new, e_err := ExtractData(stripped, data)
-			Check(e_err)
-			replaced[i].new = new
-		}
-		return replaceMatches(template, replaced)
+	matches, m_err := getMatches(template,  `\${`, `}`)
+	Check(m_err)
+	replaced := make([]Match, len(matches))
+	for i, match := range matches {
+		replaced[i] = match
+		stripped := strings.Trim(match.original, "${}")
+		new, e_err := ExtractData(stripped, data)
+		Check(e_err)
+		replaced[i].new = new
+	}
+	return replaceMatches(template, replaced)
 }
 
 // Get and replace all ${.+}s
@@ -59,18 +60,52 @@ func populateTemplates(payload string, list []Data) (string, error) {
 	return ret, nil
 }
 
-// Get all matches to a string, 
-func getMatches(template string, match string) []Match {
-	// Match to all.
-	re := regexp.MustCompile(match)
-	raw_matches := re.FindAll([]byte(template), -1)
+// Get all matches to a string,
+func getMatches(template string, ldel string, rdel string) ([]Match, error) {
+	// Match to all left and right delims
+	re := regexp.MustCompile("(" + ldel + "|" + rdel + ")")
+	match_indices := re.FindAllStringIndex(template, -1)
+	if match_indices == nil {
+		return nil, nil
+	}
+
+	// Create raw_matches from indices
+	raw_matches := make([]string, 0)
+	count := 0
+	curr_li := 0
+	for _, mi := range match_indices {
+		// In the beginning, set the current running left to the current left if it is a TLD
+		if count == 0 {
+			curr_li = mi[0]
+		}
+		// Count up or down depending on the current delimiter.
+		switch curr_delim := template[mi[0]:mi[1]]; curr_delim {
+		case strings.Trim(ldel, "\\"):
+			count++
+		case strings.Trim(rdel, "\\"):
+			count--
+		default:
+			return nil, GenericError{"Bad delimiter."}
+		}
+		
+		// If we reach a negative delimiter, we love. Otherwise, if it's 0, append the running string.
+		if count < 0 {
+			return nil, GenericError{"Unmatched paren 1."}
+		} else if count == 0 {
+			raw_matches = append(raw_matches, template[curr_li:mi[1]])
+		}
+	}
+	// If we don't end up at zero, there must have been an unmatched paren.
+	if count != 0 {
+		return nil, GenericError{"Unmatched paren 2."}
+	}
 
 	// Iterate through and make Match structs.
 	matches := make([]Match, len(raw_matches))
 	for i, m := range raw_matches {
-		matches[i] = Match{original: string(m)}
+		matches[i] = Match{original: m}
 	}
-	return matches
+	return matches, nil
 }
 
 // Populate a match "new" fields based on the action.
@@ -78,7 +113,7 @@ func populateMatches(matches []Match, data Data) ([]Match, error) {
 	var err error
 	replaced := make([]Match, len(matches))
 	for i, match := range matches {
-		
+
 		replaced[i] = match
 		action, a_err := match.getToken(1)
 		Check(a_err)
@@ -95,7 +130,7 @@ func populateMatches(matches []Match, data Data) ([]Match, error) {
 		case "loop":
 			subaction, s_err := match.getToken(2)
 			Check(s_err)
-			list, l_err :=  ExtractList(subaction, data)
+			list, l_err := ExtractList(subaction, data)
 			Check(l_err)
 			replaced[i].new, err = populateTemplates(match.getPayload(2), list)
 			Check(err)
@@ -119,7 +154,8 @@ func replaceMatches(template string, matches []Match) (string, error) {
 // Apply partials to a template.
 func ProcessPartials(template string, partials map[string]string) string {
 	// Get matches, then iterate through them.
-	matches := getMatches(template, `{{(.|\n)+?}}`)
+	matches, m_err := getMatches(template, `{{`, `}}`)
+	Check(m_err)
 	replaced := make([]Match, len(matches))
 	for i, match := range matches {
 		replaced[i] = match
@@ -143,7 +179,8 @@ func ProcessPartials(template string, partials map[string]string) string {
 
 // Apply data to a template.
 func ProcessData(template string, data Data) string {
-	matches := getMatches(template, `{{(.|\n)+?}}`)
+	matches, m_err := getMatches(template, `{{`, `}}`)
+	Check(m_err)
 	matches, p_err := populateMatches(matches, data)
 	Check(p_err)
 	ret, r_err := replaceMatches(template, matches)
@@ -154,7 +191,8 @@ func ProcessData(template string, data Data) string {
 // Apply content to a template.
 func ProcessContent(template string, content string) string {
 	// Get matches, then iterate through them.
-	matches := getMatches(template, `{{(.|\n)+?}}`)
+	matches, m_err := getMatches(template, `{{`, `}}`)
+	Check(m_err)
 	replaced := make([]Match, len(matches))
 	for i, match := range matches {
 		replaced[i] = match

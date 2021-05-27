@@ -8,6 +8,10 @@ Run `go get github.com/n-young/goo` to install it. Then, you can run Goo from th
 
 ## Usage
 
+### CLI
+
+TODO: Explain this LOL
+
 ### `site.yaml`
 
 Most of Goo's functionality is built atop your main `site.yaml` file, which is where you specify the entire shape of the site. A sample is as follows:
@@ -82,6 +86,15 @@ There are a number of potential actions, details below.
 #### Partial
 `partial <partial_name>` takes a name of a partial, specified in the `site.yaml`, and injects its contents. Partials cannot be injected into other partials (no nested evaluation).
 
+
+#### TODO: Data model
+
+- title
+- global
+- post
+- defined paths
+- examples
+
 #### Data
 `data` takes the path of a data point and injects it with no special formatting. For example, if we had a `data.yaml` file like:
 
@@ -143,9 +156,10 @@ Could be looped over using:
 
 This would generate two table rows, making it ideal for highly repetitive data.
 
+TODO: Nested loops, also need to change parsing, then.
+
 ### Content
 `content` is used exclusively in a collection, and is the site where the main content specified in a Markdown file will be injected. Information on parsing options is in the Posts section.
-
 
 ### Posts
 
@@ -159,6 +173,10 @@ name: Arthur
 
 # Hello, world!
 ```
+
+TODO: Accessing post data (in the post object)
+
+TODO: Clarify the below as other features and give examples.
 
 Our parsing supports unsafe HTML, attributes, :joy:-style emojis, inline LaTex, syntax highlighting, and the entire GitHub Flavored Markdown spec.
 
