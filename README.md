@@ -212,12 +212,15 @@ Markdown files used in a Collection will each be converted to HTML using Goldmar
 ---
 title: My Post
 name: Arthur
+draft: "false"
 ---
 
 # Hello, world!
 ```
 
 As said above, you can access data in the header section (which should be written as YAML) in the `post` object (`{{ data post.[data] }}`).
+
+If `draft` is set to the string "true", then the file will be omitted from builds unless your `site.yaml` file has the `draft` attribute set to the boolean true.
 
 Our parsing supports unsafe HTML, attributes, :joy:-style emojis, inline LaTex, syntax highlighting, and the entire GitHub Flavored Markdown spec.
 

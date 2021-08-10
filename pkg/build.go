@@ -13,6 +13,7 @@ import (
 type Config struct {
 	Name        string
 	Output      string
+	Draft		bool
 	Static_src      string
 	Static_dest      string
 	Global      map[string]string

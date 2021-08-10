@@ -115,6 +115,22 @@ func WriteCollection(c Collection, config Config, globalData Data) error {
 		metadata_nested["post"] = metadata_raw
 		metadata, err := CastData(metadata_nested)
 		Check(err)
+
+		// If its not a draft, and the post is a draft, then skip it.
+		if !config.Draft {
+			post_metadata, pm_err := metadata.getChild("post")
+			Check(pm_err)
+			is_draft_leaf, idl_err := post_metadata.getChild("draft")
+			if idl_err == nil {
+				is_draft, id_err := is_draft_leaf.getValue()
+				Check(id_err)
+				if is_draft == "true" {
+					continue
+				}
+			}
+		}
+
+		// Process the content and metadata.
 		processed := ProcessContent(ret, content)
 		processed = ProcessData(processed, metadata)
 
