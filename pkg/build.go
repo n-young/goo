@@ -23,7 +23,7 @@ type Config struct {
 }
 
 // Parse them site.yaml file to get site Config.
-func parseConfig(file string) Config {
+func ParseConfig(file string) Config {
 	// Read config out to a string.
 	data, io_err := ioutil.ReadFile(file)
 	Check(io_err)
@@ -41,7 +41,7 @@ func Build(file string) {
 	fmt.Println("Building Goo site.")
 
 	// Parse config, setup Dir, get globalData.
-	config := parseConfig(file)
+	config := ParseConfig(file)
 	os.RemoveAll(config.Output)
 	os.MkdirAll(config.Output, 0744)
 	globalData := GetData(config.Global)

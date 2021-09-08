@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	goo "github.com/n-young/goo/pkg"
 )
@@ -30,13 +31,17 @@ func main() {
 			}
 			goo.Build(args[2]);
 		}
-		// Watch - repeatedly runs Build whenever a file changes.
-		case "watch": {
-			if len(args) != 3 {
-				fmt.Println("Usage: goo watch <site.yml>");
+		// Serve - .
+		case "serve": {
+			if len(args) != 4 {
+				fmt.Println("Usage: goo serve <site.yml> <port>");
 				return;
+			} else if _, err := strconv.Atoi(args[3]); err != nil {
+				fmt.Println("invalid port")
+				return
 			}
-			goo.Watch(args[2]);
+			goo.Build(args[2]);
+			goo.Serve(args[2], args[3]);
 		}
 		// Default: print out usage details.
 		default: {

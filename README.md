@@ -10,7 +10,7 @@ Run `go get github.com/n-young/goo` to install it. Then, you can run Goo from th
 
 Goo is a command-line tool. To see a list of commands run `goo help`.
 
-There are four commands. `goo build <site.yaml>` builds a site with the provided site.yaml file. `goo help`, as you saw, prints out some help information. `goo init` initializes an empty Goo site. `goo watch` (under development) is `goo build` with hot reloading.
+There are four commands. `goo build <site.yaml>` builds a site with the provided site.yaml file. `goo help`, as you saw, prints out some help information. `goo init` initializes an empty Goo site. `goo serve <site.yaml> <port>` builds the site, then serves it at the provided port.
 
 ## `site.yaml`
 
