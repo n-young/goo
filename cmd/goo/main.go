@@ -45,7 +45,7 @@ func main() {
 				fmt.Println("invalid port")
 				return
 			}
-			if !*nobuild {
+			if *nobuild {
 				goo.Build(args[1]);
 			}
 			goo.Serve(args[1], args[2]);
