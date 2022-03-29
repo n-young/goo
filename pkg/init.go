@@ -1,8 +1,8 @@
 package pkg
 
 import (
-    "fmt"
-    "io/ioutil"
+	"fmt"
+	"io/ioutil"
 	"os"
 )
 

@@ -3,7 +3,8 @@ package pkg
 import "log"
 
 // Generic Error
-type GenericError struct {message string}
+type GenericError struct{ message string }
+
 func (b GenericError) Error() string {
 	return "ERROR: " + b.message
 }

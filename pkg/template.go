@@ -36,7 +36,7 @@ func (match Match) getPayload(n int) string {
 
 // Process a single template.
 func processTemplate(template string, data Data) (string, error) {
-	matches, m_err := getMatches(template,  `\${`, `}`)
+	matches, m_err := getMatches(template, `\${`, `}`)
 	Check(m_err)
 	replaced := make([]Match, len(matches))
 	for i, match := range matches {
@@ -98,7 +98,7 @@ func getMatches(template string, ldel string, rdel string) ([]Match, error) {
 		default:
 			return nil, GenericError{"Bad delimiter."}
 		}
-		
+
 		// If we reach a negative delimiter, we love. Otherwise, if it's 0, append the running string.
 		if count < 0 {
 			return nil, GenericError{"Unmatched paren 1."}

@@ -1,12 +1,20 @@
-.PHONY: all clean
+BINS = goo
 
-all: build
+.PHONY: all $(BINS) install clean test format
 
-build:
-	go build ./cmd/goo
+all: $(BINS)
+
+$(BINS):
+	go build ./cmd/$@
 
 install:
 	go install ./cmd/goo
 
 clean:
-	rm goo
+	rm -f $(BINS)
+
+test:
+	go test ./test/* -v -race
+
+format:
+	gofmt -s -w .

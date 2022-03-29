@@ -3,9 +3,9 @@ package pkg
 import (
 	"bytes"
 	"io/ioutil"
-    "path/filepath"
-	"strings"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/litao91/goldmark-mathjax"
 	"github.com/yuin/goldmark"
@@ -107,7 +107,7 @@ func WriteCollection(c Collection, config Config, globalData Data) error {
 
 	// Iterate through the markdown files in the posts directory, writing each one.
 	files, err := filepath.Glob(c.Posts + "/*")
-    Check(err)
+	Check(err)
 	for _, file := range files {
 		// Convert to HTML, inject into template.
 		content, metadata_raw := markdownToHtml(file)
@@ -136,10 +136,10 @@ func WriteCollection(c Collection, config Config, globalData Data) error {
 
 		// Get correct path.
 		tokens := strings.Split(file, "/")
-		trailing_path := strings.TrimSuffix(tokens[len(tokens) - 1], ".md")
+		trailing_path := strings.TrimSuffix(tokens[len(tokens)-1], ".md")
 
 		// Write
-		wr_err := ioutil.WriteFile(base_path + trailing_path + ".html", []byte(processed), 0644)
+		wr_err := ioutil.WriteFile(base_path+trailing_path+".html", []byte(processed), 0644)
 		Check(wr_err)
 	}
 	return nil

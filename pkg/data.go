@@ -17,6 +17,7 @@ type Data interface {
 
 // DataNode - means there is more data below.
 type DataNode map[string]Data
+
 func (n DataNode) getChild(key string) (Data, error) {
 	ret, ok := n[key]
 	if ok {
@@ -39,6 +40,7 @@ func (n DataNode) setGlobal(data Data) {
 
 // DataLeaf - means there is no more data below.
 type DataLeaf string
+
 func (l DataLeaf) getChild(key string) (Data, error) {
 	return nil, GenericError{"Called getChild on a Leaf."}
 }
@@ -51,6 +53,7 @@ func (l DataLeaf) getList() ([]Data, error) {
 
 // DataLeaf - means there is no more data below.
 type DataList []Data
+
 func (l DataList) getChild(key string) (Data, error) {
 	return nil, GenericError{"Called getChild on a List."}
 }
@@ -60,7 +63,6 @@ func (l DataList) getValue() (string, error) {
 func (l DataList) getList() ([]Data, error) {
 	return []Data(l), nil
 }
-
 
 // Cast a generic unmarshal to the Data format above.
 func CastData(m map[interface{}]interface{}) (Data, error) {

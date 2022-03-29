@@ -4,7 +4,7 @@ import "fmt"
 
 func Help() {
 	fmt.Println(
-`Usage: goo <command>
+		`Usage: goo <command>
 Compile a Goo site.
 
 Available commands:

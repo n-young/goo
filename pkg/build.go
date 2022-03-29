@@ -5,17 +5,17 @@ import (
 	"io/ioutil"
 	"os"
 
-	"gopkg.in/yaml.v2"
 	"github.com/otiai10/copy"
+	"gopkg.in/yaml.v2"
 )
 
 // Config struct. Built from site.yaml.
 type Config struct {
 	Name        string
 	Output      string
-	Draft		bool
-	Static_src      string
-	Static_dest      string
+	Draft       bool
+	Static_src  string
+	Static_dest string
 	Global      map[string]string
 	Partials    map[string]string
 	Pages       []Page
