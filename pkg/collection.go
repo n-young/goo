@@ -15,6 +15,9 @@ import (
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer/html"
+	hashtag "github.com/abhinav/goldmark-hashtag"
+	wikilink "github.com/abhinav/goldmark-wikilink"
+	mermaid "github.com/abhinav/goldmark-mermaid"
 )
 
 // Collection struct. For each in collections.
@@ -53,6 +56,11 @@ func markdownToHtml(filename string) (string, map[interface{}]interface{}) {
 				// TODO: Make this pickable. https://github.com/alecthomas/chroma/tree/master/styles.
 				highlighting.WithStyle("monokai"),
 			),
+			&hashtag.Extender{
+				Variant: hashtag.ObsidianVariant,
+			},
+			&wikilink.Extender{},
+			&mermaid.Extender{},
 		),
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(),
