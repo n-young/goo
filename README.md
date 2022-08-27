@@ -4,7 +4,7 @@ Goo is ([yet another](https://jamstack.org/generators/)) static site generator b
 
 ## Installation
 
-Run `go get github.com/n-young/goo` to install it. Then, you can run Goo from the command line.
+Run `go install -v github.com/n-young/goo/cmd/goo@latest` to install it. Then, you can run Goo from the command line.
 
 ## CLI
 
