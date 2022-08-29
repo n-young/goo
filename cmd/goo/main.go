@@ -38,7 +38,7 @@ func main() {
 		if len(args) != 4 && len(args) != 5 {
 			fmt.Println("Usage: goo serve <site.yml> <port>")
 			return
-		} else if _, err := strconv.Atoi(args[2]); err != nil {
+		} else if _, err := strconv.Atoi(args[3]); err != nil {
 			fmt.Println("invalid port")
 			return
 		}
