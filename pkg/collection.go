@@ -66,7 +66,6 @@ func markdownToHtml(filename string) (string, map[interface{}]interface{}) {
 			parser.WithAutoHeadingID(),
 		),
 		goldmark.WithRendererOptions(
-			html.WithHardWraps(),
 			html.WithXHTML(),
 			html.WithUnsafe(),
 		),
